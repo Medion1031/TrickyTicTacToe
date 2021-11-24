@@ -29,7 +29,7 @@ public class Game extends JFrame implements ActionListener {
     private boolean xTurn;
     private int performedActions = 0;
     private int gameType = 6;
-    char[][] playerTable;
+    char[][] playerTable = new char[gameType][gameType];
 
     public Game() {
         declarations();
@@ -48,6 +48,7 @@ public class Game extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 gameType = 6;
+                playerTable = new char[6][6];
                 buildGamePanel();
             }
         });
@@ -55,6 +56,7 @@ public class Game extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 gameType = 10;
+                playerTable = new char[10][10];
                 buildGamePanel();
             }
         });
@@ -62,6 +64,7 @@ public class Game extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 gameType = 14;
+                playerTable = new char[14][14];
                 buildGamePanel();
             }
         });
@@ -141,6 +144,10 @@ public class Game extends JFrame implements ActionListener {
     }
 
     private void checkHabitat(int id) {
+        int cols, rows;
+        cols = id % gameType;
+        rows = id / gameType;
+        System.out.println(horizontalCheck(0, 0, false, false, cols, rows));
 
     }
 
@@ -164,15 +171,28 @@ public class Game extends JFrame implements ActionListener {
 
         if(a1 || a2) return horizontalCheck(counter, iterate+1, a1, a2, start01, start02);
         else return counter;
-
     }
 
-    private int lTRCheck(int counter, boolean a1, boolean a2, int start01, int start02) {
-        return -1;
+    private int lTRCheck(int counter,int iterate, boolean a1, boolean a2, int start01, int start02) {
+        if(playerTable[start01-iterate][start02-iterate] == playerTable[start01][start02] && a1 && start01-iterate >= 0 && start02-iterate >= 0) counter++;
+        else a1 = false;
+
+        if(playerTable[start01+iterate][start02+iterate] == playerTable[start01][start02] && a2 && start01+iterate <= playerTable.length && start01+iterate <= playerTable[0].length) counter++;
+        else a2 = false;
+
+        if(a1 || a2) return horizontalCheck(counter, iterate+1, a1, a2, start01, start02);
+        else return counter;
     }
 
-    private int rTLCheck(int counter, boolean a1, boolean a2, int start01, int start02) {
-        return -1;
+    private int rTLCheck(int counter,int iterate, boolean a1, boolean a2, int start01, int start02) {
+        if(playerTable[start01-iterate][start02+iterate] == playerTable[start01][start02] && a1 && start01-iterate >= 0 && start02-iterate <= playerTable[0].length) counter++;
+        else a1 = false;
+
+        if(playerTable[start01+iterate][start02-iterate] == playerTable[start01][start02] && a2 && start01+iterate <= playerTable.length && start01+iterate >= 0) counter++;
+        else a2 = false;
+
+        if(a1 || a2) return horizontalCheck(counter, iterate+1, a1, a2, start01, start02);
+        else return counter;
     }
 
     private int buttonsId(JButton b) {
